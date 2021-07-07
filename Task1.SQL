@@ -1,7 +1,8 @@
 -- Task 1
 SELECT
-    DataTable.areaId,
-    AVG(DataTable.idleTime) AS Avg_idleTime
+    T1.areaId,
+    TUMBLE_END(T1.matchTime, INTERVAL '1' HOUR) AS Window_Hour,
+    AVG(T1.idleTime) AS Avg_idleTime
 FROM (
     SELECT * FROM Rides
     MATCH_RECOGNIZE(
@@ -19,8 +20,8 @@ FROM (
             D AS D.isStart = false,
             P AS P.isStart = true
     )
-) AS DataTable
+) AS T1
 GROUP BY 
-    DataTable.areaId,
-    TUMBLE(DataTable.matchTime, INTERVAL '1' HOUR)
+    T1.areaId,
+    TUMBLE(T1.matchTime, INTERVAL '1' HOUR)
 ;
